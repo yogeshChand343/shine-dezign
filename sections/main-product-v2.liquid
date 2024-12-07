@@ -1,0 +1,124 @@
+{{ "main-product-v2.css" | asset_url | stylesheet_tag }}
+<section>
+  <div class="m-container">
+    <div class="product-layout">
+      {% render 'product-gallery-v2'
+        , product: product %}
+      {% render 'product-info-v2'
+        , product: product %}
+    </div>
+  </div>
+</section>
+
+<script src="{{ 'product-gallery-v2.js' | asset_url }}" defer></script>
+{% schema %}
+  {
+    "name": "Main Product",
+    "settings": [],
+    "blocks": [
+      {
+        "type": "title",
+        "name": "Title",
+        "settings": []
+      }, {
+        "type": "price",
+        "name": "Price",
+        "settings": [
+          {
+            "type": "checkbox",
+            "label": "Display Sale Price",
+            "id": "sale_price"
+          }
+        ]
+      }, {
+        "type": "product_form",
+        "name": "Product Form",
+        "settings": [
+          {
+            "type": "range",
+            "label": "Level of options",
+            "id": "options_level",
+            "default": 3,
+            "min": 1,
+            "max": 3,
+            "step": 1
+          },
+          {
+            "type": "checkbox",
+            "label": "Display quantity button",
+            "id": "quantity_button",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "label": "Display size guide button",
+            "id": "size_guide",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "label": "Display add to cart button",
+            "id": "add_to_cart",
+            "default": true
+          }, {
+            "type": "checkbox",
+            "label": "Display Notify Me Button",
+            "id": "notify_button",
+            "info": "If unchecked, Sold Out Button will be displayed"
+          }, {
+            "type": "url",
+            "label": "Notify Success Redirection",
+            "id": "success_redirection"
+          }, {
+            "type": "url",
+            "label": "Chat To Shopper Redirection",
+            "id": "shopper_link"
+          }, {
+            "type": "checkbox",
+            "label": "Update product gallery on variant change",
+            "id": "update_image",
+            "default": true
+          }, {
+            "type": "text",
+            "label": "Image update option name",
+            "id": "option_to_update",
+            "info": "This option values will be responsible for product gallery update Ex - Color",
+            "default": "Color"
+          }, {
+            "type": "text",
+            "label": "Out of stock title",
+            "id": "out_stock_title",
+            "default": "This item is currently out of stock"
+          }, {
+            "type": "richtext",
+            "label": "Out of stock description",
+            "id": "out_stock_description"
+          }, {
+            "type": "checkbox",
+            "label": "Complete Dispatch Message Display",
+            "id": "dispatch_message",
+            "info": "If unchecked only the number would be taken from the metafield",
+            "default": true
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Main Product",
+        "blocks": [
+          {
+            "type": "title"
+          }, {
+            "type": "price"
+          }, {
+            "type": "product_form"
+          }
+        ]
+      }
+    ],
+    "enabled_on": {
+      "templates": ["product"]
+    }
+  }
+{% endschema %}

@@ -1,0 +1,32 @@
+<div data-role="product-info">
+  <div class="product-info-container">
+    {% for block in section.blocks %}
+      {% case block.type %}
+        {% when 'title' %}
+          <h3 class="product-title">
+            {{ product.title }}
+          </h3>
+        {% when 'price' %}
+          {% if block.settings.sale_price and product.selected_or_first_available_variant.price < product.selected_or_first_available_variant.compare_at_price %}
+            <div class="price-container">
+              <h3 class="compare-price">
+                {{ product.selected_or_first_available_variant.compare_at_price | money }}
+              </h3>
+              <h3 class="sale-price">
+                {{ product.selected_or_first_available_variant.price | money }}
+              </h3>
+            </div>
+          {% else %}
+            <h3 class="regular-price">
+              {{ product.selected_or_first_available_variant.price | money }}
+            </h3>
+          {% endif %}
+        {% when 'product_form' %}
+          {% render 'product-form-v2'
+            , product: product
+            , class: 'form-wrapper'
+            , block_settings: block.settings %}
+      {% endcase %}
+    {% endfor %}
+  </div>
+</div>
