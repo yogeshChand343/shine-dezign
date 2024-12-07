@@ -1,0 +1,220 @@
+{% style %}
+  variant-selectors input[type='radio']:checked + label {
+    border: solid 2px #000;
+  }
+{% endstyle %}
+
+{% liquid
+  assign loadedVariant = product.selected_or_first_available_variant
+  assign variantAvailable = loadedVariant.available
+  if loadedVariant.price == 0
+    assign variantAvailable = false
+  endif
+%}
+
+<product-form
+  {% if block_settings.update_image and block_settings.option_to_update != blank %}
+  data-updateImage="{{ block_settings.option_to_update }}"
+  {% endif %}
+  class="{{ class }} group-form">
+  {% form 'product'
+    , product %}
+    <input
+      type="hidden"
+      name="id"
+      value="{{ loadedVariant.id }}">
+    <input
+      type="hidden"
+      name="quantity"
+      value="1">
+    {% unless product.has_only_default_variant %}
+      <variant-selectors
+        data-product="{{ product.handle }}"
+        data-section="{{ section.id }}"
+        {% if block_settings.update_image and block_settings.option_to_update != blank %}
+        data-updateOption="{{ block_settings.option_to_update }}"
+        {% endif %}>
+        {%- liquid
+          assign variants_available_arr = product.variants | map: 'available'
+          assign variants_option1_arr = product.variants | map: 'option1'
+          assign variants_option2_arr = product.variants | map: 'option2'
+          assign variants_option3_arr = product.variants | map: 'option3'
+        -%}
+        {% for option in product.options_with_values %}
+          {% assign maxOptionDisplay = block_settings.options_level | plus: 0 %}
+          {% assign optName = option.name | downcase %}
+          {% if optName == 'color' or optName == 'colour' %}
+
+            <div data-role="selector-wrapper" class="selector-wrapper{% if forloop.index > maxOptionDisplay %} hidden {% endif %}">
+              <p class="option-title">
+                {{ option.name }} :
+                <span class="selected-value" data-role="selectedopt">
+                  {{- option.selected_value -}}
+                </span>
+              </p>
+              <div class="options-container">
+                {% for value in option.values %}
+                  {% liquid
+                    assign option_disabled = true
+
+                    for option1_name in variants_option1_arr
+                      case option.position
+                        when 1
+                          if variants_option1_arr[forloop.index0] == value and variants_available_arr[forloop.index0]
+                            assign option_disabled = false
+                          endif
+                        when 2
+                          if option1_name == product.selected_or_first_available_variant.option1 and variants_option2_arr[forloop.index0] == value and variants_available_arr[forloop.index0]
+                            assign option_disabled = false
+                          endif
+                        when 3
+                          if option1_name == product.selected_or_first_available_variant.option1 and variants_option2_arr[forloop.index0] == product.selected_or_first_available_variant.option2 and variants_option3_arr[forloop.index0] == value and variants_available_arr[forloop.index0]
+                            assign option_disabled = false
+                          endif
+                      endcase
+                    endfor
+                  %}
+
+                  <input
+                    type="radio"
+                    class="hidden {% if option_disabled %} unavailable{% endif %}"
+                    name="{{ option.name }}"
+                    id="{{option.name }}-{{ value }}"
+                    value="{{ value }}"
+                    data-role="variant-selector"
+                    {% if value == option.selected_value %}
+                    checked
+                    {% endif %}>
+                  <label
+                    for="{{option.name }}-{{ value }}"
+                    class="color-option-label {% if option.values.size > 10 %} keen-slider__slide {% endif %}"
+                    style="background-color: {{ value.swatch.color }}"></label>
+
+                {% endfor %}
+              </div>
+            </div>
+          {% else %}
+            {% assign optName = option.name | downcase %}
+            <div data-role="selector-wrapper" class="selector-wrapper{% if forloop.index > maxOptionDisplay %} hidden {% endif %}">
+              <p class="option-title">
+                {{ option.name }} :
+                {%- if optName == 'size' and block_settings.size_guide -%}
+                  <span
+                    data-app="eastsideco_sizeGuides"
+                    data-shop="{{ shop.permanent_domain }}"
+                    data-tags="{{ product.tags | join:',' | escape }}"
+                    data-metafields="{{ product.metafields.esc-size-matters.tag }}"
+                    data-popup="link"
+                    class="size-guide-link"></span>
+                {%- else -%}
+                  <span data-role="selectedopt" class="selected-value ml-5">
+                    {{- option.selected_value -}}
+                  </span>
+                {%- endif -%}
+              </p>
+              <div class="options-container {% if option.values.size > 10 %} options-slider-wrapper{% else %} flex-wrap gap-3 {% endif %}">
+                {% if option.values.size > 10 %}
+                  <button class="slider-prev" data-role="opt-prev">
+                    icon
+                  </button>
+                  <div class="options-slider">
+                {% endif %}
+                {% for value in option.values %}
+                  {% liquid
+                    assign option_disabled = true
+
+                    for option1_name in variants_option1_arr
+                      case option.position
+                        when 1
+                          if variants_option1_arr[forloop.index0] == value and variants_available_arr[forloop.index0]
+                            assign option_disabled = false
+                          endif
+                        when 2
+                          if option1_name == product.selected_or_first_available_variant.option1 and variants_option2_arr[forloop.index0] == value and variants_available_arr[forloop.index0]
+                            assign option_disabled = false
+                          endif
+                        when 3
+                          if option1_name == product.selected_or_first_available_variant.option1 and variants_option2_arr[forloop.index0] == product.selected_or_first_available_variant.option2 and variants_option3_arr[forloop.index0] == value and variants_available_arr[forloop.index0]
+                            assign option_disabled = false
+                          endif
+                      endcase
+                    endfor
+                  %}
+                  <div class="option-item {% if option.values.size > 10 %} keen-slider__slide {% endif %}">
+                    <input
+                      type="radio"
+                      class="hidden peer-input {% if option_disabled %} unavailable {% endif %}"
+                      name="{{ option.name }}"
+                      id="{{option.name }}-{{ value }}"
+                      value="{{ value }}"
+                      data-role="variant-selector"
+                      {% if value == option.selected_value %}
+                      checked
+                      {% endif %}>
+                    <label for="{{option.name }}-{{ value }}" class="option-label">
+                      {{- value -}}
+                    </label>
+                  </div>
+                {% endfor %}
+                {% if option.values.size > 10 %}
+                  </div>
+                  <button class="slider-next" data-role="opt-next">
+                    icon
+                  </button>
+                {%- endif %}
+              </div>
+            </div>
+          {% endif %}
+        {% endfor %}
+        <script data-id="variants-data" type="application/json">
+          {{ product.variants | json }}
+        </script>
+        <script data-id="options-data" type="application/json">
+          {{ product.options_with_values | json }}
+        </script>
+      </variant-selectors>
+    {% endunless %}
+    <div
+      data-role="available-block"
+      {% unless variantAvailable %}
+      class="hidden"
+      {% endunless %}>
+      {% unless block_settings.quantity_button %}
+        <input
+          type="hidden"
+          min="1"
+          value="1"
+          data-role="quantity">
+      {% endunless %}
+      {% if block_settings.quantity_button %}
+        <quantity-input-new>
+          <div class="quantity-container">
+            <button data-role="decrement">-</button>
+            <input
+              class="quantity-input"
+              type="number"
+              min="1"
+              value="1"
+              data-role="quantity">
+            <button data-role="increment">+</button>
+          </div>
+        </quantity-input-new>
+      {% endif %}
+
+      <p class="hidden" data-role="alert"></p>
+      <div class="product-actions">
+        <button
+          type="submit"
+          class="product-button add-to-cart-button"
+          {% if product.variants.size > 1 %}
+          data-role="select-variant"
+          {% endif %}>
+          Add to cart
+        </button>
+      </div>
+    </div>
+  {% endform %}
+</product-form>
+
+
+<script src="{{ 'product-form-v2.js' | asset_url }}" defer></script>

@@ -1,0 +1,51 @@
+{% liquid
+  assign selected_variant = product.selected_or_first_available_variant
+  if selected_variant != blank and selected_variant.featured_media != blank
+    assign featured_media = selected_variant.featured_media
+  else
+    assign featured_media = product.featured_media
+  endif
+%}
+
+<product-gallery data-product="{{ product.handle }}" class="product-gallery">
+  <div class="main-slider-container" data-role="main-slider">
+    <div class="main-image">
+      <img
+        class="media-image"
+        src="{{ featured_media | image_url: width: 1445 }}"
+        alt="{{ featured_media.alt | escape }}"
+        loading="eager"
+        data-media-id="{{ featured_media.id }}"
+        width="100%"
+        height="auto"
+        data-role="featured-image">
+    </div>
+    <div class="thumb-images">
+      {% for media in product.media %}
+        {% liquid
+          assign variantsImage = ''
+          for variant in product.variants
+            if variant.featured_media.id == media.id
+              assign variantsImage = variantsImage | append: ',' | append: variant.id
+            endif
+          endfor
+        %}
+        <div
+          class="thumb-image"
+          data-variant="{{ variantsImage }}"
+          data-media="{{ media.id }}"
+          data-src="{{ media | image_url: width: 768 }}"
+          data-role="thumb-image">
+          <img
+            class="media-image"
+            src="{{ media | image_url: width: 768 }}"
+            alt="{{ media.alt | escape }}"
+            loading="eager"
+            data-media-id="{{ media.id }}"
+            width="100%"
+            height="auto">
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</product-gallery>
