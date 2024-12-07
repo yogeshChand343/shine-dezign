@@ -1,8 +1,54 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "main": {
-      "type": "main-product-v2"
+      "type": "main-product-v2",
+      "blocks": {
+        "title_JhkXLN": {
+          "type": "title",
+          "settings": {}
+        },
+        "price_kXzhL9": {
+          "type": "price",
+          "settings": {
+            "sale_price": false
+          }
+        },
+        "product_form_V93RAb": {
+          "type": "product_form",
+          "settings": {
+            "options_level": 3,
+            "quantity_button": true,
+            "size_guide": true,
+            "add_to_cart": true,
+            "notify_button": false,
+            "success_redirection": "",
+            "shopper_link": "",
+            "update_image": true,
+            "option_to_update": "Color",
+            "out_stock_title": "This item is currently out of stock",
+            "out_stock_description": "",
+            "dispatch_message": true
+          }
+        }
+      },
+      "block_order": [
+        "title_JhkXLN",
+        "price_kXzhL9",
+        "product_form_V93RAb"
+      ],
+      "settings": {}
     }
   },
-  "order": ["main"]
+  "order": [
+    "main"
+  ]
 }
